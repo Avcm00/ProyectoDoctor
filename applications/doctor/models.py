@@ -36,7 +36,7 @@ class HorarioAtencion(models.Model):
 
 def generar_horas_validas():
     hora_actual = datetime.strptime("07:00", "%H:%M")
-    fin = datetime.strptime("17:00", "%H:%M")
+    fin = datetime.strptime("17:01", "%H:%M")
     intervalo = timedelta(minutes=30)
     horas = []
 

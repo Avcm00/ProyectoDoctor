@@ -90,3 +90,4 @@ class HorarioAtencionForm(ModelForm):
             )
         
         return icon
+    

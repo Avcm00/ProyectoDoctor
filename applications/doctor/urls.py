@@ -2,7 +2,7 @@ from django.urls import path
 
 from applications.doctor.views.atencion_medica import AtencionListView, AtencionCreateView, AtencionUpdateView, \
     AtencionDeleteView
-from applications.doctor.views.citamedica import CitaMedicaCreateView, CitaMedicaDeleteView, CitaMedicaListView, CitaMedicaUpdateView, api_citas_medicas, api_dias_disponibles, api_horarios_detalle
+from applications.doctor.views.citamedica import CitaMedicaCreateView, CitaMedicaDeleteView, CitaMedicaListView, CitaMedicaUpdateView
 from applications.doctor.views.servicioadicional import ServicioAdicionalesListView, ServicioAdicionalesCreateView, ServicioAdicionalesUpdateView, ServicioAdicionalesDeleteView
 from applications.doctor.views.horarioatencion import HorarioAtencionListView, HorarioAtencionCreateView, \
     HorarioAtencionUpdateView, HorarioAtencionDeleteView
@@ -28,9 +28,9 @@ urlpatterns = [
     path('horarioatenciones_delete/<int:pk>/', HorarioAtencionDeleteView.as_view(), name="horarioatenciones_delete"),
     
     # Rutas para CitaMedica
-    path('citamedicas_api_dias_disponibles/', api_dias_disponibles, name="citamedicas_api_dias_disponibles"),
-    path('api/horarios-detalle/', api_horarios_detalle, name='api_horarios_detalle'),
-    path('citamedicas_api/', api_citas_medicas, name="citamedicas_api"),
+    #path('citamedicas_api_dias_disponibles/', api_dias_disponibles, name="citamedicas_api_dias_disponibles"),
+    #path('api/horarios-detalle/', api_horarios_detalle, name='api_horarios_detalle'),
+    #path('citamedicas_api/', api_citas_medicas, name="citamedicas_api"),
     path('citamedicas_list/', CitaMedicaListView.as_view(), name="citamedicas_list"),
     path('citamedicas_create/', CitaMedicaCreateView.as_view(), name="citamedicas_create"),
     path('citamedicas_update/<int:pk>/', CitaMedicaUpdateView.as_view(), name="citamedicas_update"),

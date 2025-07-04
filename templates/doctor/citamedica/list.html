@@ -41,7 +41,6 @@
                                 <th scope="col" class="px-6 py-3">Paciente</th>
                                 <th scope="col" class="px-6 py-3">Fecha</th>                              
                                 <th scope="col" class="px-6 py-3">Hora</th>                              
-                                <!-- <th scope="col" class="px-6 py-3">Estado</th> --> <!-- Elimina o comenta esta línea -->
                                 <th scope="col" class="px-6 py-3">Motivo de Consulta</th>                              
                                 <th scope="col" class="px-6 py-3">Acciones</th>
                             </tr>
@@ -53,7 +52,6 @@
                                 <td class="px-6 py-4 font-semibold">{{ item.paciente.nombres }} {{ item.paciente.apellidos }}</td>
                                 <td class="px-6 py-4">{{ item.fecha|date:"d/m/Y" }}</td>
                                 <td class="px-6 py-4">{{ item.hora_cita }}</td>
-                                <!-- <td class="px-6 py-4"> ...estado... </td> --> <!-- Elimina o comenta esta línea -->
                                 <td class="px-6 py-4">
                                     {% if item.observaciones %}
                                         {{ item.observaciones|truncatechars:50 }}
@@ -69,11 +67,11 @@
                                     </a>
                                     {% endif %}  
                                     {% if permissions.delete_citamedica %}
-                                    <a href="#"
-                                        class="text-red-600 dark:text-red-500 hover:text-red-800 mx-1"
-                                        onclick="openDeleteModal('{{ item.id }}', '{{ item.paciente }} - {{ item.fecha|date:"d/m/Y" }}')">
+                                    <button type="button"
+                                        class="text-red-600 dark:text-red-500 hover:text-red-800 mx-1 bg-transparent border-0 cursor-pointer"
+                                        onclick="openDeleteModal('{{ item.id }}', '{{ item.paciente.nombres }} {{ item.paciente.apellidos }} - {{ item.fecha|date:"d/m/Y" }}')">
                                         <i class="fa-solid fa-trash text-lg"></i>
-                                    </a>
+                                    </button>
                                     {% endif %} 
                                 </td>
                             </tr>
@@ -128,11 +126,14 @@
     </section>
 
     {% include 'fragments/delete.html' %}
+   
    <script>
     function openDeleteModal(id, name) {
+        event.preventDefault(); // Prevenir navegación
         const deleteForm = document.getElementById('deleteForm');
-        deleteForm.action = `{% url 'doctor:citamedicas_delete' 0 %}`.replace('0', id);
-        document.getElementById('Description').textContent = `ID: ${id} - ${name}`;
+        const deleteUrl = `{% url 'doctor:citamedicas_delete' 0 %}`.replace('0', id);
+        deleteForm.action = deleteUrl;
+        document.getElementById('Description').textContent = `${name}`;
         document.getElementById('deleteModal').classList.remove('hidden');
     }
 
@@ -148,11 +149,10 @@
                 const submitBtn = deleteForm.querySelector('button[type="submit"]');
                 if (submitBtn) {
                     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Eliminando...';
-            deleteForm.addEventListener('submit', function(e) {
-                const submitBtn = deleteForm.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Eliminando...';
                     submitBtn.disabled = true;
                 }
             });
-        }    });    </script>{% endblock %}
+        }
+    });
+    </script>
+{% endblock %}
