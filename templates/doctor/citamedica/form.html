@@ -13,59 +13,198 @@
         </div>
 
         <!-- Calendario -->
-        <div id="calendar" class="mb-10 rounded-xl overflow-hidden shadow-md bg-white dark:bg-gray-900 p-4"></div>
-
-        <!-- FullCalendar -->
-        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-                    initialView: 'dayGridMonth',
-                    locale: 'es',
-                    height: 500,
-                    events: '/doctor/api/citas/',
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek'
-                    },
-                    dateClick: function (info) {
-                        const fechaInput = document.querySelector('#{{ form.fecha.id_for_label }}');
-                        if (fechaInput) fechaInput.value = info.dateStr;
-                    },
-                    eventClick: function (info) {
-                        alert('Cita de: ' + info.event.title + '\nFecha y hora: ' + info.event.start.toLocaleString());
-                    },
-                });
-                calendar.render();
-            });
-        </script>
-        <!-- Fin FullCalendar -->
-
-        <!-- Calendario -->
         <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mt-6">
             <h2 class="text-2xl font-semibold mb-4">Calendario de Citas Médicas</h2>
             <p class="text-gray-600 dark:text-gray-400 mb-4">Seleccione una fecha para registrar una nueva cita médica.</p>
-            <div id="calendar"></div>
-        <!-- Fin Calendario -->
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mt-6">
-            <form method="post" action="{% url 'doctor:citamedicas_create' %}" class="space-y-4">
-                {{ form.as_p }}
-                {% csrf_token %}
-                
-                <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition duration-200">
-                    Registrar Cita Médica
-                </button>
-            </form>
-            <a href="{% url 'doctor:citamedicas_list' %}" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-full flex items-center justify-center transition-colors duration-300">
-                <i class="fa-solid fa-arrow-left mr-2"></i>Cancelar
-            </a>
+            <div id="calendar" class="mb-10 rounded-xl overflow-hidden shadow-md bg-white dark:bg-gray-900 p-4"></div>
         </div>
 
+        <!-- Formulario de Registro -->
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mt-6">
+            <h2 class="text-2xl font-semibold mb-4">Registrar Nueva Cita</h2>
+            
+            <!-- Formulario para seleccionar fecha -->
+            <form method="get" action="{% url 'doctor:citamedicas_create' %}" class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div class="flex items-center space-x-4">
+                    
+                    
+                </div>
+            </form>
+
+            <!-- Formulario principal -->
+            <form method="post" action="{% url 'doctor:citamedicas_create' %}" class="space-y-4">
+                {% csrf_token %}
+                
+                <!-- Campo paciente -->
+                <div>
+                    <label for="{{ form.paciente.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {{ form.paciente.label }}
+                    </label>
+                    {{ form.paciente }}
+                    {% if form.paciente.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {{ form.paciente.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Campo fecha -->
+                <div>
+                    <label for="{{ form.fecha.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {{ form.fecha.label }}
+                    </label>
+                    {{ form.fecha }}
+                    {% if form.fecha.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {{ form.fecha.errors }}
+                        </div>
+                    {% endif %}
+                    {% if fecha_seleccionada %}
+                        <div class="text-sm text-gray-600 mt-1">
+                            Fecha seleccionada: {{ fecha_seleccionada|date:"d/m/Y" }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Campo hora -->
+                <div>
+                    <label for="{{ form.hora_cita.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {{ form.hora_cita.label }}
+                    </label>
+                    {{ form.hora_cita }}
+                    {% if form.hora_cita.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {{ form.hora_cita.errors }}
+                        </div>
+                    {% endif %}
+                    {% if not horas_disponibles and fecha_seleccionada %}
+                        <div class="text-amber-600 text-sm mt-1">
+                            <i class="fa-solid fa-exclamation-triangle mr-1"></i>
+                            No hay horarios disponibles para esta fecha
+                        </div>
+                    {% elif horas_disponibles %}
+                        <div class="text-green-600 text-sm mt-1">
+                            <i class="fa-solid fa-check-circle mr-1"></i>
+                            {{ horas_disponibles|length }} horario{{ horas_disponibles|length|pluralize }} disponible{{ horas_disponibles|length|pluralize }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Campo estado -->
+                <div>
+                    <label for="{{ form.estado.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {{ form.estado.label }}
+                    </label>
+                    {{ form.estado }}
+                    {% if form.estado.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {{ form.estado.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Campo observaciones -->
+                <div>
+                    <label for="{{ form.observaciones.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {{ form.observaciones.label }}
+                    </label>
+                    {{ form.observaciones }}
+                    {% if form.observaciones.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {{ form.observaciones.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Errores del formulario -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                        {% for error in form.non_field_errors %}
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+                                <span>{{ error }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Botones de acción -->
+                <div class="d-flex gap-3">
+                    <!-- Botón Crear -->
+                    <button type="submit" class="btn btn-primary flex-fill">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Crear Cita Médica
+                    </button>
+                    
+                    <!-- Botón Eliminar -->
+                    
+                </div>
+            </form>
+            
+            <!-- Botón cancelar -->
+            <div class="mt-4">
+                <a href="{% url 'doctor:citamedicas_list' %}" class="btn btn-secondary d-flex align-items-center justify-content-center">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Cancelar
+                </a>
+            </div>
+        </div>
+    </div>
 </section>
 
+<!-- FullCalendar CSS y JS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar FullCalendar
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'es',
+        height: 500,
+        events: '/doctor/api/citas/',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek'
+        },
+        dateClick: function(info) {
+            // Actualizar el campo de fecha del formulario de selección
+            const fechaInput = document.querySelector('#fecha_seleccionada');
+            if (fechaInput) {
+                fechaInput.value = info.dateStr;
+            }
+            
+            // También actualizar el campo de fecha del formulario principal
+            const fechaFormInput = document.querySelector('#{{ form.fecha.id_for_label }}');
+            if (fechaFormInput) {
+                fechaFormInput.value = info.dateStr;
+            }
+        },
+        eventClick: function(info) {
+            alert('Cita de: ' + info.event.title + '\nFecha y hora: ' + info.event.start.toLocaleString());
+        }
+    });
+    calendar.render();
+
+    // Sincronizar los campos de fecha
+    const fechaSeleccionada = document.getElementById('fecha_seleccionada');
+    const fechaForm = document.getElementById('{{ form.fecha.id_for_label }}');
+    
+    if (fechaSeleccionada && fechaForm) {
+        fechaSeleccionada.addEventListener('change', function() {
+            fechaForm.value = this.value;
+        });
+        
+        fechaForm.addEventListener('change', function() {
+            fechaSeleccionada.value = this.value;
+        });
+    }
+});
+
+// Función para limpiar el formulario
+
+</script>
 
 {% endblock %}

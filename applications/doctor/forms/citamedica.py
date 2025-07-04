@@ -14,18 +14,22 @@ class CitaMedicaForm(ModelForm):
             "observaciones" ,
         ]
         widgets = {
-            "paciente": forms.Select(attrs={
-                "class": "form-select w-full rounded-lg border-gray-300 focus:ring focus:ring-blue-200"
-            }),
+                "paciente": forms.Select(attrs={
+                    "class": "form-select block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+                }),
+                "hora_cita": forms.Select(attrs={
+                    "class": "form-select block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+                }),
+                "estado": forms.Select(attrs={
+                    "class": "form-select block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+                }),
+                "observaciones": forms.Textarea(attrs={
+                    "class": "form-textarea block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600",
+                    "rows": 4,
+                    "placeholder": "Escriba observaciones adicionales aquí..."
+                }),
+            }
             
-            "estado": forms.Select(attrs={
-                "class": "form-select w-full rounded-lg border-gray-300 focus:ring focus:ring-blue-200"
-            }),
-            "observaciones": forms.Textarea(attrs={
-                "class": "form-textarea w-full rounded-lg border-gray-300 focus:ring focus:ring-blue-200",
-                "rows": 4
-            }),
-        }
         labels = {
             "paciente": "Paciente",
             "fecha": "Fecha de la Cita",

@@ -1,10 +1,13 @@
+from datetime import datetime, timedelta
+import re
+from time import timezone
 from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from applications.doctor.forms.citamedica import CitaMedicaForm
 from applications.doctor.models import CitaMedica, HorarioAtencion
 from applications.security.components.mixin_crud import CreateViewMixin, DeleteViewMixin, ListViewMixin, PermissionMixin, UpdateViewMixin
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView,View
 from django.db.models import Q
 
 
@@ -25,7 +28,6 @@ class CitaMedicaListView(PermissionMixin, ListViewMixin, ListView):
         context['create_url'] = reverse_lazy('doctor:citamedica_create')
         print(context['permissions'])
         return context
-
 class CitaMedicaCreateView(PermissionMixin, CreateViewMixin, CreateView):
     model = CitaMedica
     template_name = 'doctor/citamedica/form.html'
@@ -44,7 +46,7 @@ class CitaMedicaCreateView(PermissionMixin, CreateViewMixin, CreateView):
         citamedica = self.object
         messages.success(self.request, f"Éxito al crear el citamedica {citamedica.paciente}.")
         return response
-
+    
 class CitaMedicaUpdateView(PermissionMixin, UpdateViewMixin, UpdateView):
     model = CitaMedica
     template_name = 'doctor/citamedica/form.html'
